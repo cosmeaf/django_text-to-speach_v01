@@ -31,6 +31,9 @@ COPY . /app
 # exclude files from the Docker image
 COPY .dockerignore /app/
 
+# Create LOG to Gunicorn PATH
+RUN mkdir -p /var/log/gunicorn/ && chown -R 1000:1000 /var/log/gunicorn/
+
 # start the app using gunicorn
 # CMD ["gunicorn", "--workers", "2", "app.wsgi", "-b", "0.0.0.0:8000", "--log-level", "debug"]
 CMD ["gunicorn", "--workers", "2", "app.wsgi", "-b", "0.0.0.0:8000", "--log-level", "debug", "--access-logfile", "/var/log/gunicorn/access.log"]
