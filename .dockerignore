@@ -1,0 +1,26 @@
+# arquivos de mídia
+media/
+
+# arquivos de banco de dados
+*.sqlite3
+
+# arquivos de cache
+__pycache__/
+*.pyc
+*.pyo
+
+# diretórios de ambiente virtual
+venv/
+env/
+
+# arquivos de logs
+*.log
+*.log.*
+logs/
+
+# arquivos de configuração local
+*.env
+*.ini
+
+# outros arquivos
+.DS_Store

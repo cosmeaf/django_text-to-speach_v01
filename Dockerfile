@@ -32,4 +32,6 @@ COPY . /app
 COPY .dockerignore /app/
 
 # start the app using gunicorn
-CMD ["gunicorn", "--workers", "2", "app.wsgi", "-b", "0.0.0.0:8000", "--log-level", "debug"]
+# CMD ["gunicorn", "--workers", "2", "app.wsgi", "-b", "0.0.0.0:8000", "--log-level", "debug"]
+CMD ["gunicorn", "--workers", "2", "app.wsgi", "-b", "0.0.0.0:8000", "--log-level", "debug", "--access-logfile", "/var/log/gunicorn/access.log"]
+
