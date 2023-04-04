@@ -17,4 +17,6 @@ RUN chmod +x entrypoint.sh
 WORKDIR /app
 COPY . /app
 
+RUN mkdir /var/log/gunicorn && chown www-data /var/log/gunicorn
+
 CMD ["/entrypoint.sh"]
