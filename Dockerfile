@@ -22,6 +22,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # copy project
 COPY . /app
 
+
 # copy the cron file
 # COPY ./cron /etc/cron.d/cron
 # RUN chmod 0644 /etc/cron.d/cron
@@ -36,6 +37,9 @@ RUN mkdir -p /var/log/gunicorn
 
 # set ownership to the user with uid 1000
 RUN chown -R 1000:1000 /var/log/gunicorn
+
+# run database migrations
+RUN python manage.py migrate
 
 # start the app using gunicorn #
 CMD ["gunicorn", "--workers", "2", "app.wsgi", "-b", "0.0.0.0:8000", "--log-level", "debug", "--access-logfile", "/var/log/gunicorn/access.log"]
