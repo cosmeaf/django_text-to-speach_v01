@@ -37,5 +37,5 @@ RUN mkdir -p /var/log/gunicorn
 # set ownership to the user with uid 1000
 RUN chown -R 1000:1000 /var/log/gunicorn
 
-# start the app using gunicorn
+# start the app using gunicorn #
 CMD ["gunicorn", "--workers", "2", "app.wsgi", "-b", "0.0.0.0:8000", "--log-level", "debug", "--access-logfile", "/var/log/gunicorn/access.log"]
