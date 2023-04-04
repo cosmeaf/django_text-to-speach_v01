@@ -1,45 +1,20 @@
-# pull the official base image
-FROM python:3-alpine
+FROM python:3.9-slim-buster
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+RUN apt-get update && \
+    apt-get install -y nginx supervisor && \
+    rm -rf /var/lib/apt/lists/*
 
-# set work directory
+COPY requirements.txt /app/requirements.txt
+
+RUN pip install --no-cache-dir -r /app/requirements.txt && \
+    rm -rf /root/.cache/pip/*
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x entrypoint.sh
+
 WORKDIR /app
-
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev && \
-    apk add --no-cache mariadb-dev build-base mariadb-client && \
-    apk add --no-cache tzdata
-
-# TIME ZONE
-ENV TZ="America/Sao_Paulo"
-
-# install dependencies
-COPY ./requirements.txt /app/
-RUN pip install --no-cache-dir -r /app/requirements.txt
-
-# copy project
 COPY . /app
 
-
-# copy the cron file
-# COPY ./cron /etc/cron.d/cron
-# RUN chmod 0644 /etc/cron.d/cron
-# RUN crontab /etc/cron.d/cron
-# RUN touch /var/log/cron.log
-
-# exclude files from the Docker image
-COPY .dockerignore /app/
-
-# create the log directory for gunicorn
-RUN mkdir -p /var/log/gunicorn
-
-# set ownership to the user with uid 1000
-RUN chown -R 1000:1000 /var/log/gunicorn
-
-# run database migrations
-RUN python manage.py migrate
-
-# start the app using gunicorn #
-CMD ["gunicorn", "--workers", "2", "app.wsgi", "-b", "0.0.0.0:8000", "--log-level", "debug", "--access-logfile", "/var/log/gunicorn/access.log"]
+CMD ["/entrypoint.sh"]
